@@ -15,7 +15,7 @@ class ItemWidget extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: () {
-          print(item.name);
+          print(item.name + " clicked");
         },
         leading: Image.network(item.image),
         title: Text(item.name),
