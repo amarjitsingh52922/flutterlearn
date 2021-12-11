@@ -1,7 +1,9 @@
 import 'package:firstapp/models/catalog.dart';
-import 'package:firstapp/widgets/drawer.dart';
-import 'package:firstapp/widgets/item_widget.dart';
+import 'package:firstapp/utils/routes.dart';
+import 'package:firstapp/widgets/home_widgets/catalog_header.dart';
+import 'package:firstapp/widgets/home_widgets/catalog_list.dart';
 import 'package:firstapp/widgets/themes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -39,6 +41,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, MyRoutes.cartRoute),
+        child: Icon(
+          CupertinoIcons.cart,
+          color: Colors.white,
+        ),
+        backgroundColor: Theme.of(context).buttonColor,
+      ),
       body: SafeArea(
         child: Container(
           padding: Vx.m32,
@@ -47,105 +58,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               CatalogHeader(),
               if (CatalogModel.items != null && CatalogModel.items.isNotEmpty)
-                CatalogList().expand()
+                CatalogList().py16().expand()
               else
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
+                Expanded(child: Center(child: CircularProgressIndicator()))
             ],
           ),
         ),
       ),
     );
-  }
-}
-
-class CatalogHeader extends StatelessWidget {
-  const CatalogHeader({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        "Catalog App".text.xl5.bold.color(MyTheme.darkBluishColor).make(),
-        "Trending Products".text.xl2.make(),
-      ],
-    );
-  }
-}
-
-class CatalogList extends StatelessWidget {
-  const CatalogList({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: CatalogModel.items.length,
-        itemBuilder: (context, index) {
-          final item = CatalogModel.items[index];
-          return CatalogItem(catalog: item);
-        });
-  }
-}
-
-class CatalogItem extends StatelessWidget {
-  final Item catalog;
-  const CatalogItem({Key key, @required this.catalog})
-      : assert(catalog != null),
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return VxBox(
-      child: Row(
-        children: [
-          CatalogImage(image: catalog.image),
-          Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              catalog.name.text.lg.color(MyTheme.darkBluishColor).bold.make(),
-              catalog.desc.text.textStyle(context.captionStyle).make(),
-              10.0.heightBox,
-              ButtonBar(
-                alignment: MainAxisAlignment.spaceBetween,
-                buttonPadding: EdgeInsets.zero,
-                children: [
-                  "\$${catalog.price}".text.bold.xl.make(),
-                  ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(MyTheme.darkBluishColor),
-                        shape: MaterialStateProperty.all(StadiumBorder()),
-                      ),
-                      child: "Buy".text.make())
-                ],
-              ).pOnly(right: 8.0)
-            ],
-          )),
-        ],
-      ),
-    ).red100.roundedLg.square(150).make().py16();
-  }
-}
-
-class CatalogImage extends StatelessWidget {
-  final String image;
-  const CatalogImage({Key key, @required this.image}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.network(image)
-        .box
-        .rounded
-        .p8
-        .color(MyTheme.creamColor)
-        .make()
-        .p16()
-        .w40(context);
   }
 }
